@@ -34,10 +34,12 @@ so_0 <- sleuth_lrt(so_0, "reduced", "full")
 
 # view results
 res_0 <- sleuth_results(so_0, 'reduced:full', test_type = 'lrt')
-write.csv(res_0, file = "exp2_rna_sleuth_lrt.csv")
+#write.csv(res_0, file = "exp2_rna_sleuth_lrt.csv")
 
 res_0_obsnorm <- sleuth_to_matrix(so_0, 'obs_norm', 'est_counts')
-write.csv(res_0_obsnorm, file = "exp2_rna_sleuth_obsnorm.csv")
+#write.csv(res_0_obsnorm, file = "exp2_rna_sleuth_obsnorm.csv")
+
+sleuth_live(so_0)
 
 #### withOUT time 0 
 s2c <- s2c[!s2c$condition %in% c('t_0'), ]
@@ -48,27 +50,37 @@ so <- sleuth_fit(so, ~ condition, "full")
 so <- sleuth_fit(so, ~ 1, "reduced")
 so <- sleuth_lrt(so, "reduced", "full")
 
+
 sleuth_live(so)
 
 res <- sleuth_results(so, 'reduced:full', test_type = 'lrt')
-write.csv(res, file = "exp2_rna_no0_sleuth_lrt.csv")
+#write.csv(res, file = "exp2_rna_no0_sleuth_lrt.csv")
 
 res_obsnorm <- sleuth_to_matrix(so, 'obs_norm', 'est_counts')
-write.csv(res_obsnorm, file = "exp2_rna_no0_sleuth_obsnorm.csv")
+#write.csv(res_obsnorm, file = "exp2_rna_no0_sleuth_obsnorm.csv")
 
 #### 19 hrs training vs. 19 hrs no training 
 s2c_19 <- s2c[s2c$condition %in% c('t_19', 'ut_19'), ]
 
+
+
+
 so_19 <- sleuth_prep(s2c_19, extra_bootstrap_summary = TRUE)
+
+# want model set up certain way
+so_19$sample_to_covariates$condition <- factor(so_19$sample_to_covariates$condition)
+so_19$sample_to_covariates$condition <- relevel(so_19$sample_to_covariates$condition, ref = "ut_19")
 
 so_19 <- sleuth_fit(so_19, ~ condition, "full")
 so_19 <- sleuth_fit(so_19, ~ 1, "reduced")
 so_19 <- sleuth_lrt(so_19, "reduced", "full")
+so_19 <- sleuth_wt(so_19, 'conditiont_19', which_model = 'full')
+
 
 sleuth_live(so_19)
 
-res_19 <- sleuth_results(so_19, 'reduced:full', test_type = 'lrt')
-write.csv(res_19, file = "exp2_rna_t19ut19_sleuth_lrt.csv")
+res_19 <- sleuth_results(so_19, 'conditiont_19', test_type = 'wald')
+write.csv(res_19, file = "exp2_rna_t19ut19_sleuth_wald_v2.csv")
 
 #res_obsnorm <- sleuth_to_matrix(so, 'obs_norm', 'est_counts')
 #write.csv(res_obsnorm, file = "exp2_rna_no0_sleuth_obsnorm.csv")
@@ -81,10 +93,11 @@ so_1990 <- sleuth_prep(s2c_1990, extra_bootstrap_summary = TRUE)
 so_1990 <- sleuth_fit(so_1990, ~ condition, "full")
 so_1990 <- sleuth_fit(so_1990, ~ 1, "reduced")
 so_1990 <- sleuth_lrt(so_1990, "reduced", "full")
+so_1990 <- sleuth_wt(so_1990, 'conditiont_19', which_model = 'full')
 
 sleuth_live(so_1990)
 
-res_1990 <- sleuth_results(so_1990, 'reduced:full', test_type = 'lrt')
-write.csv(res_1990, file = "exp2_rna_t19f90_sleuth_lrt.csv")
+res_1990 <- sleuth_results(so_1990, 'conditiont_19', test_type = 'wald')
+write.csv(res_1990, file = "exp2_rna_t19f90_sleuth_wald.csv")
 
 
