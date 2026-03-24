@@ -47,6 +47,10 @@ so_19 <- sleuth_prep(s2c_19, extra_bootstrap_summary = TRUE)
 
 sleuth_live(so_19) # for exploration + PCA
 
+# want model set up certain way
+so_19$sample_to_covariates$condition <- factor(so_19$sample_to_covariates$condition)
+so_19$sample_to_covariates$condition <- relevel(so_19$sample_to_covariates$condition, ref = "untrained_19")
+
 # check for batch effects 
 so_19 <- sleuth_fit(so_19, ~1, 'reduced')
 so_19 <- sleuth_fit(so_19, ~batch, 'batch')
@@ -56,15 +60,15 @@ sleuth_batch_19 <- sleuth_results(so_19, 'reduced:batch', 'lrt', show_all = FALS
 
 # no detected batch effects, fit condition model and wald test 
 so_19 <- sleuth_fit(so_19, ~condition, 'full')
-so_19 <- sleuth_wt(so_19, 'conditionuntrained_19', which_model = 'full')
+so_19 <- sleuth_wt(so_19, 'conditiontrained_19', which_model = 'full')
 
 
-sleuth_19_wald <- sleuth_results(so_19, 'conditionuntrained_19', 'wt', show_all = FALSE)
+sleuth_19_wald <- sleuth_results(so_19, 'conditiontrained_19', 'wt', show_all = FALSE)
 sleuth_19_sig <- dplyr::filter(sleuth_19_wald, qval <= 0.2)
 
-write.csv(sleuth_19_wald, "/Volumes/albright_postdoc/deepa/exp1_sleuth_19_wald.csv")
+write.csv(sleuth_19_wald, "/Volumes/albright_postdoc/deepa/exp1_sleuth_19_wald_v2.csv")
 
-write.csv(sleuth_19_sig, "/Volumes/albright_postdoc/deepa/exp1_sleuth_19_wald_sig.csv")
+write.csv(sleuth_19_sig, "/Volumes/albright_postdoc/deepa/exp1_sleuth_19_wald_sig_v2.csv")
 
 #####################################
 # 4 hour training 
@@ -88,6 +92,10 @@ so_4 <- sleuth_prep(s2c_4, extra_bootstrap_summary = TRUE)
 
 #sleuth_live(so_4) # for exploration 
 
+# want model set up certain way
+so_4$sample_to_covariates$condition <- factor(so_4$sample_to_covariates$condition)
+so_4$sample_to_covariates$condition <- relevel(so_4$sample_to_covariates$condition, ref = "untrained_4")
+
 # check for batch effects 
 so_4 <- sleuth_fit(so_4, ~1, 'reduced')
 so_4 <- sleuth_fit(so_4, ~batch, 'batch')
@@ -97,13 +105,13 @@ sleuth_batch_4 <- sleuth_results(so_4, 'reduced:batch', 'lrt', show_all = FALSE)
 
 # no detected batch effects, fit condition model and wald test 
 so_4 <- sleuth_fit(so_4, ~condition, 'full')
-so_4 <- sleuth_wt(so_4, 'conditionuntrained_4', which_model = 'full')
+so_4 <- sleuth_wt(so_4, 'conditiontrained_4', which_model = 'full')
 
-sleuth_4_wald <- sleuth_results(so_4, 'conditionuntrained_4', 'wt', show_all = FALSE)
+sleuth_4_wald <- sleuth_results(so_4, 'conditiontrained_4', 'wt', show_all = FALSE)
 sleuth_4_sig <- dplyr::filter(sleuth_4_wald, qval <= 0.2)
 
-write.csv(sleuth_4_wald, "/Volumes/albright_postdoc/deepa/exp1_sleuth_4_wald.csv")
+write.csv(sleuth_4_wald, "/Volumes/albright_postdoc/deepa/exp1_sleuth_4_wald_v2.csv")
 
-write.csv(sleuth_4_sig, "/Volumes/albright_postdoc/deepa/exp1_sleuth_4_wald_sig.csv")
+write.csv(sleuth_4_sig, "/Volumes/albright_postdoc/deepa/exp1_sleuth_4_wald_sig_v2.csv")
 
 
